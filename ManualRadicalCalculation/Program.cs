@@ -5,13 +5,14 @@ internal class Program
     static string initialInput = null!;
     static string preprocessedInput = null!;
     static int extraZeroes = 100;
-    static int babylonIterations = 50;
+    static int iterations = 50;
     static double babylonStart = 1.0;
     static double factor = 1.0;
 
     static ManualRadicalFinder manualFinder = new();
     static BabylonRadicalFinder babylonFinder = new();
     static QuakeRadicalFinder quakeFinder = new();
+    static SecantRadicalFinder secantFinder = new();
 
     static void Main(string[] args)
     {
@@ -19,11 +20,15 @@ internal class Program
         PreProcess();
 
         double dInput = double.Parse(initialInput);
+        (double x1, double x2) = secantFinder.FindStart(dInput);
+        double babylonStart = babylonFinder.FindStart(dInput);
 
         Console.WriteLine(Fill("Output: ") + "{0}", 
             manualFinder.Process(preprocessedInput) / factor);
         Console.WriteLine(Fill("Babylon: ") + "{0}", 
-            babylonFinder.Process(dInput, babylonFinder.FindStart(dInput), babylonIterations));
+            babylonFinder.Process(dInput, babylonStart, iterations));
+        Console.WriteLine(Fill("Secant: ") + "{0}",
+            secantFinder.Process(dInput, x1, x2, iterations));
         Console.WriteLine(Fill("Quake: ") + "{0}",
             quakeFinder.Process(dInput));
         Console.WriteLine(Fill("Actual: ") + "{0}", 
@@ -42,9 +47,9 @@ internal class Program
         //extraZeroes = int.Parse(Console.ReadLine() ?? throw new ArgumentNullException(nameof(extraZeroes)));
         Console.WriteLine(extraZeroes);
 
-        Console.Write(Fill("Babylon Iterations: "));
+        Console.Write(Fill("Iterations: "));
         //iterations = int.Parse(Console.ReadLine() ?? throw new ArgumentNullException(nameof(iterations)));
-        Console.WriteLine(babylonIterations);
+        Console.WriteLine(iterations);
 
         Console.Write(Fill("Babylon Start: "));
         //babylonStart = double.Parse(Console.ReadLine() ?? throw new ArgumentNullException(nameof(babylonStart)));
@@ -53,7 +58,7 @@ internal class Program
 
     private static string Fill(string v)
     {
-        while (v.Length < 20)
+        while (v.Length < "Babylon Start: ".Length)
             v += ' ';
 
         return v;
