@@ -4,14 +4,16 @@ public class BabylonRadicalFinder
 {
     public double FindStart(double a)
     {
-        int i = 1;
+        return (a + 1.0) / 2.0;
+
+        /*int i = 1;
 
         while(i * i < a)
         {
             i++;
         }
 
-        return i;
+        return i;*/
     }
 
     public double Process(double a, double startX, int iterations = 10)
@@ -24,14 +26,19 @@ public class BabylonRadicalFinder
          * x_n+1 = x_n - (f(x_n) / f'(x_n))
          */
 
-        double x = startX;
+        //double f(double x) => (x * x) - a;
+        //double f_(double x) => 2 * x;
+        //double g(double x) => x - f(x) / f_(x);
 
-        double f(double x1) => (x1 * x1) - a;
-        double f_(double x1) => 2 * x1;
+        // credits: https://de.wikipedia.org/wiki/Newtonverfahren#Erstes_Beispiel
+        double invA = 1 / a;
+        double g(double x) => 0.5 * x * (3.0 - invA * (x * x));
+
+        double x = startX;
 
         for (int i = 0; i < iterations; i++)
         {
-            x = x - (f(x) / f_(x));
+            x = g(x);
         }
 
         return x < 0 ? -x : (x == 0 ? 0 : x);
