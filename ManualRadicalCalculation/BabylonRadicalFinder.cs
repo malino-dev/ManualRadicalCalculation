@@ -22,7 +22,7 @@ public class BabylonRadicalFinder
          * Function:
          * x^2 - a = 0
          * 
-         * Newton:
+         * Newton method:
          * x_n+1 = x_n - (f(x_n) / f'(x_n))
          */
 
