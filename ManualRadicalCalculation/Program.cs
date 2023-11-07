@@ -13,7 +13,7 @@ internal class Program
 
         Console.Write("Extra 0's: ");
         int extraZeroes = -1;
-        //extraZeroes = 50;
+        extraZeroes = 10;
         if(extraZeroes < 0) extraZeroes = int.Parse(Console.ReadLine() ?? throw new ArgumentNullException(nameof(extraZeroes)));
         else Console.WriteLine("{0}", extraZeroes);
 
