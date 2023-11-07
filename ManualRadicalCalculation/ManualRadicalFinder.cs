@@ -2,7 +2,7 @@
 
 namespace ManualRadicalCalculation;
 
-public class RadicalFinder
+public class ManualRadicalFinder
 {
     private string[] groups = null!;
     private int groupIndex, firstSquare;

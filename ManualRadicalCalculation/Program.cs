@@ -1,22 +1,33 @@
-﻿using System.Runtime.InteropServices.Marshalling;
-
-namespace ManualRadicalCalculation;
+﻿namespace ManualRadicalCalculation;
 
 internal class Program
 {
-    static string input = null!;
+    static string initialInput = null!;
+    static string preprocessedInput = null!;
     static int extraZeroes = 100;
+    static int babylonIterations = 50;
+    static double babylonStart = 1.0;
     static double factor = 1.0;
+
+    static ManualRadicalFinder manualFinder = new();
+    static BabylonRadicalFinder babylonFinder = new();
+    static QuakeRadicalFinder quakeFinder = new();
 
     static void Main(string[] args)
     {
         ReadInputs();
         PreProcess();
 
-        RadicalFinder finder = new();
-        double result = finder.Process(input);
-        Console.WriteLine("Output:    {0}", result / factor);
-        Console.WriteLine("Actual:    {0}", Math.Sqrt(double.Parse(input)) / factor);
+        double dInput = double.Parse(initialInput);
+
+        Console.WriteLine(Fill("Output: ") + "{0}", 
+            manualFinder.Process(preprocessedInput) / factor);
+        Console.WriteLine(Fill("Babylon: ") + "{0}", 
+            babylonFinder.Process(dInput, babylonFinder.FindStart(dInput), babylonIterations));
+        Console.WriteLine(Fill("Quake: ") + "{0}",
+            quakeFinder.Process(dInput));
+        Console.WriteLine(Fill("Actual: ") + "{0}", 
+            Math.Sqrt(double.Parse(initialInput)));
         Console.WriteLine();
 
         Main(args);
@@ -24,31 +35,49 @@ internal class Program
 
     private static void ReadInputs()
     {
-        Console.Write("Input:     ");
-        input = Console.ReadLine() ?? throw new ArgumentNullException(nameof(input));
+        Console.Write(Fill("Input:      "));
+        initialInput = Console.ReadLine() ?? throw new ArgumentNullException(nameof(initialInput));
 
-        Console.Write("Extra 0's: ");
+        Console.Write(Fill("Extra 0's:  "));
         //extraZeroes = int.Parse(Console.ReadLine() ?? throw new ArgumentNullException(nameof(extraZeroes)));
-        Console.WriteLine();
+        Console.WriteLine(extraZeroes);
+
+        Console.Write(Fill("Babylon Iterations: "));
+        //iterations = int.Parse(Console.ReadLine() ?? throw new ArgumentNullException(nameof(iterations)));
+        Console.WriteLine(babylonIterations);
+
+        Console.Write(Fill("Babylon Start: "));
+        //babylonStart = double.Parse(Console.ReadLine() ?? throw new ArgumentNullException(nameof(babylonStart)));
+        Console.WriteLine(babylonStart);
+    }
+
+    private static string Fill(string v)
+    {
+        while (v.Length < 20)
+            v += ' ';
+
+        return v;
     }
 
     private static void PreProcess()
     {
+        preprocessedInput = initialInput;
+
         if (extraZeroes > 0)
         {
-            if (!input.Contains('.')) input += '.';
-            input += new string('0', Ceiling(extraZeroes, 2));
+            if (!preprocessedInput.Contains('.')) preprocessedInput += '.';
+            preprocessedInput += new string('0', Ceiling(extraZeroes, 2));
         }
 
         factor = 1;
 
-        if (input.Contains('.'))
+        if (preprocessedInput.Contains('.'))
         {
-            int index = input.IndexOf('.');
-            string sub = input.Substring(index + 1);
+            int index = preprocessedInput.IndexOf('.');
+            string sub = preprocessedInput.Substring(index + 1);
             double rounded = Round(sub.Length, 2);
             factor = Math.Pow(10, rounded / 2);
-            input = input.Remove(index, 1);
+            preprocessedInput = preprocessedInput.Remove(index, 1);
         }
     }
 
