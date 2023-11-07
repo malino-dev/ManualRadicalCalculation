@@ -31,6 +31,7 @@ public class BabylonRadicalFinder
         //double g(double x) => x - f(x) / f_(x);
 
         // credits: https://de.wikipedia.org/wiki/Newtonverfahren#Erstes_Beispiel
+        // reason: less divisions (only 1)
         double invA = 1 / a;
         double g(double x) => 0.5 * x * (3.0 - invA * (x * x));
 
@@ -41,6 +42,6 @@ public class BabylonRadicalFinder
             x = g(x);
         }
 
-        return x < 0 ? -x : (x == 0 ? 0 : x);
+        return x < 0 ? -x : (x == 0 ? 0 : x); // extra ternary so we don't get mixed -0/+0.
     }
 }
